@@ -69,6 +69,9 @@ namespace WzComparerR2.CharaSim
         public int AddAttackToolTipDescSkill { get; set; }
         public int AssistSkillLink { get; set; }
 
+        public Point LT { get; set; }
+        public Point RB { get; set; }
+
         public int MaxLevel
         {
             get
@@ -108,7 +111,36 @@ namespace WzComparerR2.CharaSim
                         {
                             if (commonNode.Value != null && !(commonNode.Value is Wz_Vector))
                             {
-                                skill.common[commonNode.Text] = commonNode.Value.ToString();
+                                if (commonNode.Text == "cooltimeMS")
+                                {
+                                    double coolTimeMs;
+                                    if (double.TryParse(commonNode.Value.ToString(), out coolTimeMs))
+                                    {
+                                        coolTimeMs = coolTimeMs / 1000d;
+                                        skill.common[commonNode.Text] = coolTimeMs.ToString("G");
+                                    }
+                                    else
+                                    {
+                                        skill.common[commonNode.Text] = commonNode.Value.ToString();
+                                    }
+                                }
+                                else
+                                {
+                                    skill.common[commonNode.Text] = commonNode.Value.ToString();
+                                }
+
+                            }
+                            else if (commonNode.Value != null && commonNode.Value is Wz_Vector)
+                            {
+                                Wz_Vector cNode = commonNode.Value as Wz_Vector;
+                                if (commonNode.Text == "lt")
+                                {
+                                    skill.LT = new Point(cNode.X, cNode.Y);
+                                }
+                                else if (commonNode.Text == "rb")
+                                {
+                                    skill.RB = new Point(cNode.X, cNode.Y);
+                                }
                             }
                         }
                         break;
